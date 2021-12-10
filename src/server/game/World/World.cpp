@@ -3055,7 +3055,8 @@ bool World::RemoveBanAccount(BanMode mode, std::string const& nameOrIP)
         if (projectMemberInfo* info = GetprojectMemberInfo(memberId, false))
         {
             info->SetSetting(projectMemberInfo::Setting::SoloArenaBanUnbanDate, { 0u });
-            info->SetSetting(projectMemberInfo::Setting::SoloArenaBanBannedBy, { "" });
+	    std::string s = "";
+            info->SetSetting(projectMemberInfo::Setting::SoloArenaBanBannedBy, { s });
 
             // Inform every online player on this account
             for (auto&& accountId : info->GameAccountIDs)
