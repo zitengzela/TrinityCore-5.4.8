@@ -66,7 +66,7 @@ void HmacHash::Finalize()
 
 uint8 *HmacHash::ComputeHash(BigNumber* bn)
 {
-    HMAC_Update(_ctx, bn->AsByteArray().get(), bn->GetNumBytes());
+    HMAC_Update(_ctx, bn->AsByteArray(), bn->GetNumBytes());
     Finalize();
     return (uint8*)m_digest;
 }

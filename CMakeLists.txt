@@ -75,7 +75,7 @@ endif()
 include(CheckPlatform)
 
 # basic packagesearching and setup (further support will be needed, this is a preliminary release!)
-set(ACE_EXPECTED_VERSION 5.8.3)
+set(ACE_EXPECTED_VERSION 6.4.5)
 
 find_package(PCHSupport)
 find_package(ACE REQUIRED)
