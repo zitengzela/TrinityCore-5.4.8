@@ -45,7 +45,7 @@ void WardenWin::Init(WorldSession* session, BigNumber* k)
 {
     _session = session;
     // Generate Warden Key
-    SHA1Randx WK(k->AsByteArray().get(), k->GetNumBytes());
+    SHA1Randx WK(k->AsByteArray(), k->GetNumBytes());
 
     // Initial encryption is done with session key
     uint8 inputKey[MD5_DIGEST_LENGTH];
@@ -288,7 +288,7 @@ void WardenWin::RequestData(WardenRequestContext* context)
             case PAGE_CHECK_B:
             {
                 buff << uint8(type ^ xorByte);
-                buff.append(wd->Data.AsByteArray(0, false).get(), wd->Data.GetNumBytes());
+                buff.append(wd->Data.AsByteArray(0, false), wd->Data.GetNumBytes());
                 buff << uint32(wd->Address);
                 buff << uint8(wd->Length);
                 break;
@@ -475,7 +475,7 @@ void WardenWin::HandleData(ByteBuffer &buff)
                     continue;
                 }
 
-                if (memcmp(buff.contents() + buff.rpos(), rs->Result.AsByteArray(0, false).get(), rd->Length) != 0)
+                if (memcmp(buff.contents() + buff.rpos(), rs->Result.AsByteArray(0, false), rd->Length) != 0)
                 {
                     TC_LOG_DEBUG("warden", "RESULT MEM_CHECK fail CheckId %u account Id %u", rd->CheckId, _session->GetAccountId());
                     checkFailed = rd->CheckId;
@@ -570,7 +570,7 @@ void WardenWin::HandleData(ByteBuffer &buff)
                     continue;
                 }
 
-                if ((memcmp(buff.contents() + buff.rpos(), rs->Result.AsByteArray(0, false).get(), 20) != 0) ^ rd->Negative) // SHA1
+                if ((memcmp(buff.contents() + buff.rpos(), rs->Result.AsByteArray(0, false), 20) != 0) ^ rd->Negative) // SHA1
                 {
                     TC_LOG_DEBUG("warden", "RESULT MPQ_CHECK fail, CheckId %u account Id %u", rd->CheckId, _session->GetAccountId());
                     checkFailed = rd->CheckId; // _session->kick for solo kicker Model edits maps.
