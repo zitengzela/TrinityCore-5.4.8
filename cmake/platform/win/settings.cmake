@@ -18,18 +18,6 @@ set(ACE_LIBRARY "ace")
 set(BZIP2_LIBRARIES "bzip2")
 set(ZLIB_LIBRARIES "zlib")
 
-if(MSVC_VERSION EQUAL 1900)
-  set( USE_MYSQL_SOURCES 0 )
-  message(STATUS "MySQL: Disabled supplied MySQL sources")
-endif(MSVC_VERSION EQUAL 1900)
-
-if( USE_MYSQL_SOURCES )
-  set(MYSQL_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/dep/mysqllite/include)
-  set(MYSQL_LIBRARY "libmysql")
-  set( MYSQL_FOUND 1 )
-  message(STATUS "Using supplied MySQL sources")
-endif()
-
 # check the CMake preload parameters (commented out by default)
 
 # overload CMAKE_INSTALL_PREFIX if not being set properly
