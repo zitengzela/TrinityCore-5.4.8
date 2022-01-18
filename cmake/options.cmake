@@ -19,6 +19,7 @@ option(WITH_COREDEBUG   "Include additional debug-code in core"                 
 option(WITH_SANITIZER   "Build with AddressSanitizer"                                 0)
 option(AUTH_SERVER      "Build authserver"                                            1)
 option(UPDATER          "Build updater"                                               0)
+option(WITHOUT_GIT      "Disable the GIT testing routines"                            0)
 if (UNIX)
 option(BUILD_DEPLOY     "Option of a build for deployment"                            1)
 endif()
