@@ -299,7 +299,7 @@ void ReadLiquidTypeTableDBC()
     for (uint32 x = 0; x < LiqType_count; ++x)
         LiqType[dbc.getRecord(x).getUInt(0)] = dbc.getRecord(x).getUInt(3);
 
-    printf("Done! (%lu LiqTypes loaded)\n", LiqType_count);
+    printf("Done! (%u LiqTypes loaded)\n", (uint32)LiqType_count);
 }
 
 bool ExtractWmo()
