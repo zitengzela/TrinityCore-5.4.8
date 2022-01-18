@@ -30,6 +30,11 @@
 #include "MySQLThreading.h"
 #include "Transaction.h"
 
+// After version 8.01 my_bool is replaced with bool
+#if MYSQL_VERSION_ID >= 80001
+    typedef bool my_bool;
+#endif
+
 #define _LIKE_           "LIKE"
 #define _TABLE_SIM_      "`"
 #define _CONCAT3_(A, B, C) "CONCAT( " A ", " B ", " C " )"
