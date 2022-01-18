@@ -92,6 +92,10 @@ if( UNIX )
   find_package(BZip2)
 endif()
 
+if(NOT WITHOUT_GIT)
+  find_package(Git)
+endif()
+
 set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost COMPONENTS system locale filesystem thread regex
     REQUIRED
