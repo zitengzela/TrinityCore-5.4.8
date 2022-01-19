@@ -169,14 +169,15 @@ int Master::Run()
 
     TC_LOG_INFO("server.worldserver", "%s (worldserver-daemon)", GitRevision::GetFullVersion());
     TC_LOG_INFO("server.worldserver", "<Ctrl-C> to stop.\n");
-
-    TC_LOG_INFO("server.worldserver", " ████████╗██╗░░██╗░█████╗░██████╗░░██████╗░░█████╗░░██████╗████████╗");
-    TC_LOG_INFO("server.worldserver", " ╚══██╔══╝██║░░██║██╔══██╗██╔══██╗██╔════╝░██╔══██╗██╔════╝╚══██╔══╝ ");
-    TC_LOG_INFO("server.worldserver", " ░░░██║░░░███████║██║░░██║██████╔╝██║░░██╗░███████║╚█████╗░░░░██║░░░ ");
-    TC_LOG_INFO("server.worldserver", " ░░░██║░░░██║░░██║╚█████╔╝██║░░██║╚██████╔╝██║░░██║██████╔╝░░░██║░░░");
-    TC_LOG_INFO("server.worldserver", " ░░░╚═╝░░░╚═╝░░╚═╝░╚════╝░╚═╝░░╚═╝░╚═════╝░╚═╝░░╚═╝╚═════╝░░░░╚═╝░░░");
-    TC_LOG_INFO("server.worldserver", "  torghast project 2021(c) Private-sourced Game Emulation ");
-    TC_LOG_INFO("server.worldserver", "           <https://torghast-project.com> \n");
+    TC_LOG_INFO("server.worldserver", " ______                       __");
+    TC_LOG_INFO("server.worldserver", "/\\__  _\\       __          __/\\ \\__");
+    TC_LOG_INFO("server.worldserver", "\\/_/\\ \\/ _ __ /\\_\\    ___ /\\_\\ \\, _\\  __  __");
+    TC_LOG_INFO("server.worldserver", "   \\ \\ \\/\\`'__\\/\\ \\ /' _ `\\/\\ \\ \\ \\/ /\\ \\/\\ \\");
+    TC_LOG_INFO("server.worldserver", "    \\ \\ \\ \\ \\/ \\ \\ \\/\\ \\/\\ \\ \\ \\ \\ \\_\\ \\ \\_\\ \\");
+    TC_LOG_INFO("server.worldserver", "     \\ \\_\\ \\_\\  \\ \\_\\ \\_\\ \\_\\ \\_\\ \\__\\\\/`____ \\");
+    TC_LOG_INFO("server.worldserver", "      \\/_/\\/_/   \\/_/\\/_/\\/_/\\/_/\\/__/ `/___/> \\");
+    TC_LOG_INFO("server.worldserver", "                                 C O R E  /\\___/");
+    TC_LOG_INFO("server.worldserver", "http://TrinityCore.org                    \\/__/\n");
 
 
     /// worldserver PID file creation

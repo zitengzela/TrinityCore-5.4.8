@@ -25,7 +25,7 @@ if (UNIX)
 endif()
 
 # Set projectname (must be done AFTER setting configurationtypes)
-project(Project_Skyfire)
+project(TrinityCore)
 
 # CMake policies (can not be handled elsewhere)
 cmake_minimum_required(VERSION 3.11)
