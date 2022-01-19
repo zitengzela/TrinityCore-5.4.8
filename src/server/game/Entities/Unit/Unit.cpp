@@ -2238,7 +2238,7 @@ void Unit::CalcAbsorbResist(Unit* victim, SpellSchoolMask schoolMask, DamageEffe
 
                 if (Creature* target = dmgInfo.GetVictim()->ToCreature())
                 {
-                    if (GetTypeId() == TypeID::TYPEID_UNIT && !IsCharmedOwnedByPlayerOrPlayer())
+                    if (GetTypeId() == TYPEID_UNIT && !IsCharmedOwnedByPlayerOrPlayer())
                     {
                         float sparringLimitPct = target->GetSparringHealthLimit();
 			    
@@ -2389,7 +2389,7 @@ void Unit::AttackerStateUpdate(Unit* victim, bool ignoreLos, WeaponAttackType at
 
         if (Creature* target = victim->ToCreature())
         {
-            if (GetTypeId() == TypeID::TYPEID_UNIT && !IsCharmedOwnedByPlayerOrPlayer())
+            if (GetTypeId() == TYPEID_UNIT && !IsCharmedOwnedByPlayerOrPlayer())
             {
                 float sparringLimitPct = target->GetSparringHealthLimit();
 
