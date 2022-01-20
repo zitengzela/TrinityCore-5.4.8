@@ -14,12 +14,20 @@ if(WIN32)
     set(BOOST_ROOT $ENV{BOOST_ROOT})
     if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 19.0)
       set(BOOST_LIBRARYDIR ${BOOST_ROOT}/lib${PLATFORM}-msvc-12.0)
-    elseif(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 19.10)
-      set(BOOST_LIBRARYDIR ${BOOST_ROOT}/lib${PLATFORM}-msvc-14.0)
     else()
-      list(APPEND BOOST_LIBRARYDIR
-        ${BOOST_ROOT}/lib${PLATFORM}-msvc-14.1
-        ${BOOST_ROOT}/lib${PLATFORM}-msvc-14.0)
+      if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 19.10)
+        set(BOOST_LIBRARYDIR ${BOOST_ROOT}/lib${PLATFORM}-msvc-14.0)
+      else()
+            if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 19.20)
+              list(APPEND BOOST_LIBRARYDIR
+              ${BOOST_ROOT}/lib${PLATFORM}-msvc-14.1
+              ${BOOST_ROOT}/lib${PLATFORM}-msvc-14.0 )
+        else()
+            list(APPEND BOOST_LIBRARYDIR
+              ${BOOST_ROOT}/lib${PLATFORM}-msvc-14.2
+              ${BOOST_ROOT}/lib${PLATFORM}-msvc-14.1 )
+         endif()
+      endif()
     endif()
   else()
     message(FATAL_ERROR "No BOOST_ROOT environment variable could be found! Please make sure it is set and the points to your Boost installation.")
@@ -37,10 +45,17 @@ check_cxx_source_compiles("
   int main() { std::wregex r(L\".*\"); }"
   STD_HAS_WORKING_WREGEX)
 
-if (STD_HAS_WORKING_WREGEX)
-  find_package(Boost 1.55 REQUIRED system filesystem thread program_options iostreams)
+if (WIN32)
+  # On windows the requirements are higher according to the wiki.
+  set(BOOST_REQUIRED_VERSION 1.58)
 else()
-  find_package(Boost 1.55 REQUIRED system filesystem thread program_options iostreams regex)
+  set(BOOST_REQUIRED_VERSION 1.58)
+endif()
+
+if (STD_HAS_WORKING_WREGEX)
+  find_package(Boost ${BOOST_REQUIRED_VERSION} REQUIRED system filesystem thread program_options iostreams serialization)
+else()
+  find_package(Boost ${BOOST_REQUIRED_VERSION} REQUIRED system filesystem thread program_options iostreams serialization regex)
 endif()
 
 # Find if Boost was compiled in C++03 mode because it requires -DBOOST_NO_CXX11_SCOPED_ENUMS
@@ -72,6 +87,7 @@ target_compile_definitions(boost
     -DBOOST_DATE_TIME_NO_LIB
     -DBOOST_REGEX_NO_LIB
     -DBOOST_CHRONO_NO_LIB
+    -DBOOST_OPTIONAL_USE_OLD_DEFINITION_OF_NONE
     -DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE
     -DBOOST_ASIO_NO_DEPRECATED)
 
