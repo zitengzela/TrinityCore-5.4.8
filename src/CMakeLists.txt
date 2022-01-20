@@ -9,16 +9,19 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+if(WIN32)
+  set(sources_windows
+    ${CMAKE_SOURCE_DIR}/src/common/Debugging/WheatyExceptionReport.cpp
+    ${CMAKE_SOURCE_DIR}/src/common/Debugging/WheatyExceptionReport.h
+  )
+endif(WIN32)
+
 add_subdirectory(genrev)
+add_subdirectory(common)
 add_subdirectory(server)
 
 if(TOOLS)
-  if( MSVC )
-    add_subdirectory(tools)
-  else()
-    add_definitions(-std=c++11)
-    add_subdirectory(tools)
-  endif()
+  add_subdirectory(tools)
 endif(TOOLS)
 
 if (UPDATER)

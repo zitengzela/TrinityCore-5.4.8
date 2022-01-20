@@ -1,6 +1,6 @@
 #include "ScriptPCH.h"
 #include "BattlefieldMgr.h"
-#include "BattlefieldTB.h"
+//#include "BattlefieldTB.h"
 #include "Battlefield.h"
 #include "ScriptSystem.h"
 #include "WorldSession.h"
@@ -24,17 +24,17 @@ class npc_tb_spiritguide : public CreatureScript
 
         bool OnGossipHello(Player* player, Creature* creature) override
         {
-            if (creature->isQuestGiver())
+            if (creature->IsQuestGiver())
                 player->PrepareQuestMenu(creature->GetGUID());
 
-            Battlefield* BfTB = sBattlefieldMgr->GetBattlefieldByBattleId(BATTLEFIELD_BATTLEID_TB);
-            if (BfTB)
-            {
-                GraveyardVect graveyard = BfTB->GetGraveyardVector();
-                for (uint8 i = 0; i < graveyard.size(); i++)
-                    if (graveyard[i]->GetControlTeamId() == player->GetTeamId())
-                       player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, sObjectMgr->GetTrinityStringForDBCLocale(((BfGraveyardTB*)graveyard[i])->GetTextId()), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + i);
-            }
+            //Battlefield* BfTB = sBattlefieldMgr->GetBattlefieldByBattleId(BATTLEFIELD_BATTLEID_TB);
+            //if (BfTB)
+            //{
+            //    GraveyardVect graveyard = BfTB->GetGraveyardVector();
+            //    for (uint8 i = 0; i < graveyard.size(); i++)
+            //        if (graveyard[i]->GetControlTeamId() == player->GetTeamId())
+            //           player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, sObjectMgr->GetTrinityStringForDBCLocale(((BfGraveyardTB*)graveyard[i])->GetTextId()), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + i);
+            //}
 
             player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
             return true;
@@ -64,7 +64,7 @@ class npc_tol_barad_battlemage : public CreatureScript
 
         bool OnGossipHello(Player* player, Creature* creature) override
         {
-            if (creature->isQuestGiver())
+            if (creature->IsQuestGiver())
                 player->PrepareQuestMenu(creature->GetGUID());
 
             Battlefield* BfTB = sBattlefieldMgr->GetBattlefieldByBattleId(BATTLEFIELD_BATTLEID_TB);

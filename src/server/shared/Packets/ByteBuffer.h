@@ -32,6 +32,7 @@
 #include <vector>
 #include <cstring>
 #include <time.h>
+#include <ace/Stack_Trace.h>
 
 // Root of ByteBuffer exception hierarchy
 class ByteBufferException : public std::exception

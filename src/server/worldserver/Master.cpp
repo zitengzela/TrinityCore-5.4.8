@@ -41,8 +41,8 @@
 #include "TCSoap.h"
 #include "Timer.h"
 #include "Util.h"
-#include "AuthSocket.h"
-#include "RealmList.h"
+//#include "AuthSocket.h"
+#include "../authserver/Realms/RealmList.h"
 #include "ScriptLoader.h"
 #include "ScriptMgr.h"
 
