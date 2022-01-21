@@ -9,31 +9,38 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-file(GLOB_RECURSE sources *.cpp *.h)
+CollectSourceFiles(
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  PRIVATE_SOURCES)
 
-# uncomment next line to disable debug mode
-add_definitions("-DIOMAP_DEBUG")
-
-# build setup currently only supports libmpq 0.4.x
-if( NOT MSVC )
-  add_definitions("-Wall")
-  add_definitions("-ggdb")
-  add_definitions("-O3")
+if (WIN32)
+  list(APPEND PRIVATE_SOURCES ${sources_windows})
 endif()
 
-include_directories(
-  ${CMAKE_SOURCE_DIR}/dep/StormLib/src
-)
-
-add_executable(vmap4extractor ${sources})
+add_executable(vmap4extractor ${PRIVATE_SOURCES})
 
 target_link_libraries(vmap4extractor
-  ${BZIP2_LIBRARIES}
-  ${ZLIB_LIBRARIES}
-  storm
+  PRIVATE
+    trinity-core-interface
+  PUBLIC
+    common
+    storm)
+
+CollectIncludeDirectories(
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  PUBLIC_INCLUDES
 )
 
-add_dependencies(vmap4extractor storm)
+target_include_directories(vmap4extractor
+  PUBLIC
+    ${PUBLIC_INCLUDES}
+  PRIVATE
+    ${CMAKE_CURRENT_BINARY_DIR})
+
+set_target_properties(vmap4extractor
+    PROPERTIES
+      FOLDER
+        "tools")
 
 if( UNIX )
   install(TARGETS vmap4extractor DESTINATION bin)
