@@ -2449,9 +2449,9 @@ class Player : public Unit, public GridObject<Player>
 
     PvPInfo pvpInfo;
     void UpdatePvPState(bool onlyFFA = false);
-private:
     // Only sets pvp flag in Unit
     void SetPvP(bool state);
+private:
     void StartPvPOffTimer();
     void StopPvPOffTimer();
 public:

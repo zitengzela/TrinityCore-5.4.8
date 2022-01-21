@@ -8052,6 +8052,10 @@ void SpellMgr::LoadSpellInfoCorrections()
                     spellInfo->CastTimeEntry = sSpellCastTimesStore.LookupEntry(4);
                     spellInfo->RangeEntry = sSpellRangeStore.LookupEntry(1);
                     break;
+                case 85123: // Siege Cannon (Tol Barad)
+                    spellInfo->Effects[EFFECT_0].RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_200_YARDS);
+                    spellInfo->Effects[EFFECT_0].TargetA = SpellImplicitTargetInfo(TARGET_UNIT_SRC_AREA_ENTRY);
+                break;
                 default:
                     break;
             }
