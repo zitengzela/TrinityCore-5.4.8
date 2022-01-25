@@ -64,6 +64,7 @@ target_link_libraries(common
     fmt
     ace
     g3dlib
+    Detour
     sfmt
     utf8cpp
     openssl

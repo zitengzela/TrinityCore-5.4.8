@@ -24,6 +24,8 @@ target_link_libraries(mmaps_generator
     trinity-core-interface
   PUBLIC
     common
+    Recast
+    Detour
     storm)
 
 CollectIncludeDirectories(
