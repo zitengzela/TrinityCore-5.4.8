@@ -20,7 +20,7 @@
 #ifndef SF_PATH_GENERATOR_H
 #define SF_PATH_GENERATOR_H
 
-#include "SharedDefines.h"
+#include "MapDefines.h"
 #include "DetourNavMesh.h"
 #include "DetourNavMeshQuery.h"
 #include "MoveSplineInitArgs.h"

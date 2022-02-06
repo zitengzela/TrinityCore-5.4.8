@@ -17,8 +17,12 @@ option(USE_COREPCH      "Use precompiled headers when compiling servers"        
 option(WITH_WARNINGS    "Show all warnings during compile"                            0)
 option(WITH_COREDEBUG   "Include additional debug-code in core"                       0)
 option(WITH_SANITIZER   "Build with AddressSanitizer"                                 0)
-option(AUTH_SERVER      "Build authserver"                                            1)
 option(UPDATER          "Build updater"                                               0)
+
+set(WITH_SOURCE_TREE    "hierarchical" CACHE STRING "Build the source tree for IDE's.")
+set_property(CACHE WITH_SOURCE_TREE PROPERTY STRINGS no flat hierarchical hierarchical-folders)
+option(WITHOUT_GIT      "Disable the GIT testing routines"                            0)
+
 if (UNIX)
 option(BUILD_DEPLOY     "Option of a build for deployment"                            1)
 endif()

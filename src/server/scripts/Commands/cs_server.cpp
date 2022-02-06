@@ -30,7 +30,7 @@ EndScriptData */
 #include "ObjectAccessor.h"
 #include "Player.h"
 #include "ScriptMgr.h"
-#include "SystemConfig.h"
+#include "GitRevision.h"
 #include "MapManager.h"
 #include "MapInstanced.h"
 #include "Group.h"
@@ -126,7 +126,7 @@ public:
         if (maxActiveClientsNum > sWorld->getIntConfig(CONFIG_MAX_ICORE))
             maxActiveClientsNum = (maxActiveClientsNum * sWorld->getRate(RATE_MAX_MODW));
 
-        handler->PSendSysMessage("-=Project=- " REV_DATE " |cffff0000 Update Pack 3 (11.06.2019)");
+        handler->PSendSysMessage("%s", GitRevision::GetFullVersion());
         handler->PSendSysMessage(LANG_CONNECTED_USERS, playersNum, maxActiveClientsNum, queuedClientsNum, maxQueuedClientsNum);
         handler->PSendSysMessage(LANG_UPTIME, uptime.c_str());
 

@@ -11,98 +11,67 @@
 
 ########### authserver ###############
 
-file(GLOB_RECURSE sources_Authentication Authentication/*.cpp Authentication/*.h)
-file(GLOB_RECURSE sources_PrecompiledHeaders PrecompiledHeaders/*.cpp PrecompiledHeaders/*.h)
-file(GLOB_RECURSE sources_Realms Realms/*.cpp Realms/*.h)
-file(GLOB_RECURSE sources_Server Server/*.cpp Server/*.h)
-file(GLOB sources_Localdir *.cpp *.h)
+CollectSourceFiles(
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  PRIVATE_SOURCES
+  # Exclude
+  ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders)
 
-source_group(CMake FILES CMakeLists.txt)
-source_group(Authentication FILES ${sources_Authentication})
-source_group(PrecompiledHeaders FILES ${sources_PrecompiledHeaders})
-source_group(Realms FILES ${sources_Realms})
-source_group(Server FILES ${sources_Server})
-source_group(localdir FILES ${sources_Localdir})
+if (WIN32)
+  list(APPEND PRIVATE_SOURCES ${sources_windows})
+  if (MSVC)
+    list(APPEND PRIVATE_SOURCES authserver.rc)
+  endif()
+endif()
 
 if (USE_COREPCH)
-  set(authserver_PCH_HDR PrecompiledHeaders/authPCH.h)
-  set(authserver_PCH_SRC PrecompiledHeaders/authPCH.cpp)
+  set(PRIVATE_PCH_HEADER PrecompiledHeaders/authPCH.h)
 endif()
 
-set(authserver_SRCS
-  ${authserver_SRCS}
-  ${sources_Authentication}
-  ${sources_Realms}
-  ${sources_Server}
-  ${sources_Localdir}
-)
-
-if( WIN32 )
-  set(authserver_SRCS
-    ${authserver_SRCS}
-    ${sources_windows_Debugging}
-  )
-  if ( MSVC )
-    set(authserver_SRCS
-      ${authserver_SRCS}
-      authserver.rc
-    )
-  endif ()
-endif()
-
-include_directories(
-  ${CMAKE_BINARY_DIR}
-  ${CMAKE_SOURCE_DIR}/src/server/shared
-  ${CMAKE_SOURCE_DIR}/src/server/shared/Database
-  ${CMAKE_SOURCE_DIR}/src/server/shared/Debugging
-  ${CMAKE_SOURCE_DIR}/src/server/shared/Packets
-  ${CMAKE_SOURCE_DIR}/src/server/shared/Cryptography
-  ${CMAKE_SOURCE_DIR}/src/server/shared/Cryptography/Authentication
-  ${CMAKE_SOURCE_DIR}/src/server/shared/Logging
-  ${CMAKE_SOURCE_DIR}/src/server/shared/Threading
-  ${CMAKE_SOURCE_DIR}/src/server/shared/Utilities
-  ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}/Authentication
-  ${CMAKE_CURRENT_SOURCE_DIR}/Realms
-  ${CMAKE_CURRENT_SOURCE_DIR}/Server
-  ${ACE_INCLUDE_DIR}
-  ${MYSQL_INCLUDE_DIR}
-  ${OPENSSL_INCLUDE_DIR}
-)
-
-if (Boost_FOUND)
-  include_directories(${Boost_INCLUDE_DIRS})
-endif()
+GroupSources(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable(authserver
-  ${authserver_SRCS}
-  ${authserver_PCH_SRC}
+  ${PRIVATE_SOURCES}
 )
 
-add_dependencies(authserver revision.h)
-
-if( NOT WIN32 )
+if(NOT WIN32)
   set_target_properties(authserver PROPERTIES
     COMPILE_DEFINITIONS _TRINITY_REALM_CONFIG="${CONF_DIR}/authserver.conf"
   )
 endif()
 
 target_link_libraries(authserver
-  shared
-  ${MYSQL_LIBRARY}
-  ${OPENSSL_LIBRARIES}
-  ${CMAKE_THREAD_LIBS_INIT}
-  ${ACE_LIBRARY}
-  ${Boost_LIBRARIES}
-)
+  PRIVATE
+    trinity-core-interface
+  PUBLIC
+    shared
+	ace
+	)
 
-if( WIN32 )
-  if ( MSVC )
+CollectIncludeDirectories(
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  PUBLIC_INCLUDES
+  # Exclude
+  ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders)
+
+target_include_directories(authserver
+  PUBLIC
+    ${PUBLIC_INCLUDES}
+  PRIVATE
+    ${CMAKE_CURRENT_BINARY_DIR})
+
+set_target_properties(authserver
+    PROPERTIES
+      FOLDER
+        "server")
+
+if (WIN32)
+  if ("${CMAKE_MAKE_PROGRAM}" MATCHES "MSBuild")
     add_custom_command(TARGET authserver
       POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/authserver.conf.dist ${CMAKE_BINARY_DIR}/bin/$(ConfigurationName)/
     )
-  elseif ( MINGW )
+  elseif (MINGW)
     add_custom_command(TARGET authserver
       POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/authserver.conf.dist ${CMAKE_BINARY_DIR}/bin/
@@ -110,15 +79,15 @@ if( WIN32 )
   endif()
 endif()
 
-if( UNIX )
+if(UNIX)
   install(TARGETS authserver DESTINATION bin)
-  install(FILES  authserver.conf.dist DESTINATION ${CONF_DIR})
-elseif( WIN32 )
+  install(FILES authserver.conf.dist DESTINATION ${CONF_DIR})
+elseif (WIN32)
   install(TARGETS authserver DESTINATION "${CMAKE_INSTALL_PREFIX}")
   install(FILES authserver.conf.dist DESTINATION "${CMAKE_INSTALL_PREFIX}")
 endif()
 
 # Generate precompiled header
 if (USE_COREPCH)
-  add_cxx_pch(authserver ${authserver_PCH_HDR} ${authserver_PCH_SRC})
+  add_cxx_pch(authserver ${PRIVATE_PCH_HEADER})
 endif()

@@ -36,7 +36,7 @@
 #include "Database/DatabaseEnv.h"
 #include "Configuration/Config.h"
 #include "Log.h"
-#include "SystemConfig.h"
+#include "GitRevision.h"
 #include "Util.h"
 #include "SignalHandler.h"
 #include "RealmList.h"
@@ -128,16 +128,17 @@ extern int main(int argc, char** argv)
         return 1;
     }
 
-    TC_LOG_INFO("server.authserver", "%s (authserver)", _FULLVERSION);
+    TC_LOG_INFO("server.authserver", "%s (authserver)", GitRevision::GetFullVersion());
     TC_LOG_INFO("server.authserver", "<Ctrl-C> to stop.\n");
-    
-    TC_LOG_INFO("server.worldserver", " ████████╗██╗░░██╗░█████╗░██████╗░░██████╗░░█████╗░░██████╗████████╗");
-    TC_LOG_INFO("server.worldserver", " ╚══██╔══╝██║░░██║██╔══██╗██╔══██╗██╔════╝░██╔══██╗██╔════╝╚══██╔══╝ ");
-    TC_LOG_INFO("server.worldserver", " ░░░██║░░░███████║██║░░██║██████╔╝██║░░██╗░███████║╚█████╗░░░░██║░░░ ");
-    TC_LOG_INFO("server.worldserver", " ░░░██║░░░██║░░██║╚█████╔╝██║░░██║╚██████╔╝██║░░██║██████╔╝░░░██║░░░");
-    TC_LOG_INFO("server.worldserver", " ░░░╚═╝░░░╚═╝░░╚═╝░╚════╝░╚═╝░░╚═╝░╚═════╝░╚═╝░░╚═╝╚═════╝░░░░╚═╝░░░");
-    TC_LOG_INFO("server.worldserver", "  torghast project 2021(c) Private-sourced Game Emulation ");
-    TC_LOG_INFO("server.worldserver", "           <https://torghast-project.com> \n");
+    TC_LOG_INFO("server.authserver", " ______                       __");
+    TC_LOG_INFO("server.authserver", "/\\__  _\\       __          __/\\ \\__");
+    TC_LOG_INFO("server.authserver", "\\/_/\\ \\/ _ __ /\\_\\    ___ /\\_\\ \\, _\\  __  __");
+    TC_LOG_INFO("server.authserver", "   \\ \\ \\/\\`'__\\/\\ \\ /' _ `\\/\\ \\ \\ \\/ /\\ \\/\\ \\");
+    TC_LOG_INFO("server.authserver", "    \\ \\ \\ \\ \\/ \\ \\ \\/\\ \\/\\ \\ \\ \\ \\ \\_\\ \\ \\_\\ \\");
+    TC_LOG_INFO("server.authserver", "     \\ \\_\\ \\_\\  \\ \\_\\ \\_\\ \\_\\ \\_\\ \\__\\\\/`____ \\");
+    TC_LOG_INFO("server.authserver", "      \\/_/\\/_/   \\/_/\\/_/\\/_/\\/_/\\/__/ `/___/> \\");
+    TC_LOG_INFO("server.authserver", "                                 C O R E  /\\___/");
+    TC_LOG_INFO("server.authserver", "http://TrinityCore.org                    \\/__/\n");
 
     TC_LOG_INFO("server.authserver", "Using configuration file %s.", configFile);
 

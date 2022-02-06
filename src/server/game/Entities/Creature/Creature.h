@@ -565,6 +565,8 @@ class Creature : public Unit, public GridObject<Creature>, public MapObject
         CreatureData const* GetCreatureData() const { return m_creatureData; }
         CreatureAddon const* GetCreatureAddon() const;
 
+        float GetSparringHealthLimit() const;
+
         std::string GetAIName() const;
         std::string GetScriptName() const;
         uint32 GetScriptId() const;
@@ -832,4 +834,5 @@ class ForcedDespawnDelayEvent : public BasicEvent
         Creature& m_owner;
 };
 
+typedef std::unordered_map<uint32, float /*SparringHealthLimit*/> CreatureSparringTemplateMap;
 #endif
