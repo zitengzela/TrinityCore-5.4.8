@@ -54,7 +54,7 @@
 #include "BattlefieldMgr.h"
 #include "Chat.h"
 #include "Transport.h"
-#include "timeless_isle.h"
+#include "../scripts/Pandaria/TimelessIsle/timeless_isle.h"
 #include <ace/Stack_Trace.h>
 
 #define STEALTH_VISIBILITY_UPDATE_TIMER 500

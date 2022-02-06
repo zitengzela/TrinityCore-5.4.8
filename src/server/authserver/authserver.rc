@@ -54,8 +54,8 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_SYS_DEFAULT
 //
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION     FILEVER
-PRODUCTVERSION  PRODUCTVER
+FILEVERSION     VER_FILEVERSION
+PRODUCTVERSION  VER_PRODUCTVERSION
 
 FILEFLAGSMASK   VS_FFI_FILEFLAGSMASK
 
@@ -76,13 +76,13 @@ BEGIN
     BEGIN
         BLOCK "080004b0"
         BEGIN
-            VALUE "FileDescription",    "authserver"
-            VALUE "FileVersion",        STRFILEVER
+            VALUE "FileDescription",    "TrinityCore Authentication Server Daemon"
+            VALUE "FileVersion",        VER_FILEVERSION_STR
             VALUE "InternalName",       "authserver"
-            VALUE "LegalCopyright",     "Copyright (C) 2008-2016"
+            VALUE "LegalCopyright",     VER_LEGALCOPYRIGHT_STR
             VALUE "OriginalFilename",   "authserver.exe"
-            VALUE "ProductName",        "authserver"
-            VALUE "ProductVersion",     STRPRODUCTVER
+            VALUE "ProductName",        "TrinityCore Authentication Server"
+            VALUE "ProductVersion",     VER_PRODUCTVERSION_STR
         END
     END
 

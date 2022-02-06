@@ -9,34 +9,29 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-# Before project or language initialization
-if (UNIX)
-  if (EXISTS "/usr/bin/gcc-4.9")
-    message (STATUS "gcc 4.9 found. Force switching to 4.8")
-    if (NOT EXISTS "/usr/bin/gcc-4.8")
-      message (FATAL_ERROR "gcc 4.8 not found")
-    endif()
-    if (NOT EXISTS "/usr/bin/g++-4.8")
-      message (FATAL_ERROR "g++ 4.8 not installed")
-    endif()
-    set (CMAKE_C_COMPILER "/usr/bin/gcc-4.8")
-    set (CMAKE_CXX_COMPILER "/usr/bin/g++-4.8")
-  endif()
-endif()
-
 # Set projectname (must be done AFTER setting configurationtypes)
-project(Project_Skyfire)
+project(TrinityCore)
 
-# CMake policies (can not be handled elsewhere)
-cmake_minimum_required(VERSION 2.8.9)
-cmake_policy(SET CMP0005 OLD)
-if(POLICY CMP0043)
-  cmake_policy(SET CMP0043 OLD) # Disable 'Ignore COMPILE_DEFINITIONS_<Config> properties'
-endif(POLICY CMP0043)
+# We require CMake >= 3.2
+cmake_minimum_required(VERSION 3.2)
 
 # add this options before PROJECT keyword
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
+
+# CMake policies (can not be handled elsewhere)
+cmake_policy(SET CMP0005 NEW)
+if (CMAKE_VERSION VERSION_LESS "3.16.0")
+  cmake_policy(SET CMP0043 OLD) # Disable 'Ignore COMPILE_DEFINITIONS_<Config> properties'
+else()
+  cmake_policy(SET CMP0043 NEW) # Cotire isn't used so set to NEW
+endif()
+cmake_policy(SET CMP0054 NEW) # Only interpret if() arguments as variables or keywords when unquoted - prevents intepreting if (SOME_STRING_VARIABLE MATCHES "MSVC") as if (SOME_STRING_VARIABLE MATCHES "1")
+
+if(POLICY CMP0074)
+  cmake_policy(SET CMP0074 NEW) # find_package() uses <PackageName>_ROOT variables
+endif()
+
 
 # Set RPATH-handing (CMake parameters)
 set(CMAKE_SKIP_BUILD_RPATH 0)
@@ -45,7 +40,9 @@ set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH 1)
 	   
 # set macro-directory
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/macros")
+list(APPEND CMAKE_MODULE_PATH
+  "${CMAKE_SOURCE_DIR}/cmake/macros"
+  "${CMAKE_SOURCE_DIR}/dep/cotire/CMake")
 
 # build in Release-mode by default if not explicitly set
 if( NOT CMAKE_BUILD_TYPE )
@@ -64,31 +61,19 @@ if( NOPCH )
   set(USE_SCRIPTPCH 0)
 endif()
 
+include(ConfigureBaseTargets)
 include(CheckPlatform)
-
-# basic packagesearching and setup (further support will be needed, this is a preliminary release!)
-set(OPENSSL_EXPECTED_VERSION 1.0.0)
-set(ACE_EXPECTED_VERSION 5.8.3)
+include(GroupSources)
+include(AutoCollect)
+include(Macros)
 
 find_package(PCHSupport)
 find_package(ACE REQUIRED)
-find_package(OpenSSL REQUIRED)
-find_package(Threads REQUIRED)
+find_package(MySQL REQUIRED)
 
-if( NOT USE_MYSQL_SOURCES )
-  find_package(MySQL REQUIRED)
+if(NOT WITHOUT_GIT)
+  find_package(Git)
 endif()
-
-if( UNIX )
-  find_package(Readline)
-  find_package(ZLIB)
-  find_package(BZip2)
-endif()
-
-set(Boost_USE_STATIC_LIBS ON)
-find_package(Boost COMPONENTS system locale filesystem thread regex
-    REQUIRED
-)
 
 # Find revision ID and hash of the sourcetree
 include(cmake/genrev.cmake)

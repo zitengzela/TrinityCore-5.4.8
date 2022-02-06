@@ -17,44 +17,71 @@ enum eTBqueuenpctext
     TB_NPCQUEUE_TEXTOPTION_JOIN    = -1732009,
 };
 
-class npc_tb_spiritguide : public CreatureScript
+enum TBSpiritGuide
 {
-    public:
-        npc_tb_spiritguide() : CreatureScript("npc_tb_spiritguide") { }
+    SPELL_CHANNEL_SPIRIT_HEAL = 22011,
 
-        bool OnGossipHello(Player* player, Creature* creature) override
+    GOSSIP_OPTION_ID_SLAGWORKS = 0,
+    GOSSIP_OPTION_ID_IRONCLAD_GARRISON = 1,
+    GOSSIP_OPTION_ID_WARDENS_VIGIL = 2,
+    GOSSIP_OPTION_ID_EAST_SPIRE = 3,
+    GOSSIP_OPTION_ID_WEST_SPIRE = 4,
+    GOSSIP_OPTION_ID_SOUTH_SPIRE = 5,
+};
+
+class npc_tb_spirit_guide : public CreatureScript
+{
+public:
+    npc_tb_spirit_guide() : CreatureScript("npc_tb_spirit_guide") { }
+
+    struct npc_tb_spirit_guideAI : public ScriptedAI
+    {
+        npc_tb_spirit_guideAI(Creature* creature) : ScriptedAI(creature) { }
+
+        void UpdateAI(uint32 /*diff*/) override
         {
-            if (creature->isQuestGiver())
-                player->PrepareQuestMenu(creature->GetGUID());
-
-            Battlefield* BfTB = sBattlefieldMgr->GetBattlefieldByBattleId(BATTLEFIELD_BATTLEID_TB);
-            if (BfTB)
-            {
-                GraveyardVect graveyard = BfTB->GetGraveyardVector();
-                for (uint8 i = 0; i < graveyard.size(); i++)
-                    if (graveyard[i]->GetControlTeamId() == player->GetTeamId())
-                       player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, sObjectMgr->GetTrinityStringForDBCLocale(((BfGraveyardTB*)graveyard[i])->GetTextId()), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + i);
-            }
-
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
-            return true;
+            if (!me->HasUnitState(UNIT_STATE_CASTING))
+                DoCast(me, SPELL_CHANNEL_SPIRIT_HEAL);
         }
 
-        bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 action) override
+        void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId) override
         {
-            player->CLOSE_GOSSIP_MENU();
+            player->PlayerTalkClass->SendCloseGossip();
 
-            Battlefield* BfTB = sBattlefieldMgr->GetBattlefieldByBattleId(BATTLEFIELD_BATTLEID_TB);
-            if (BfTB)
+            uint32 areaId = 0;
+            switch (gossipListId)
             {
-                GraveyardVect graveyard = BfTB->GetGraveyardVector();
-                for (uint8 i = 0; i < graveyard.size(); i++)
-                    if (action - GOSSIP_ACTION_INFO_DEF == i && graveyard[i]->GetControlTeamId() == player->GetTeamId())
-                        if (WorldSafeLocsEntry const* safeLoc = sWorldSafeLocsStore.LookupEntry(graveyard[i]->GetGraveyardId()))
-                        player->TeleportTo(safeLoc->map_id, safeLoc->x, safeLoc->y, safeLoc->z, 0);
+            case GOSSIP_OPTION_ID_SLAGWORKS:
+                areaId = TB_GY_SLAGWORKS;
+                break;
+            case GOSSIP_OPTION_ID_IRONCLAD_GARRISON:
+                areaId = TB_GY_IRONCLAD_GARRISON;
+                break;
+            case GOSSIP_OPTION_ID_WARDENS_VIGIL:
+                areaId = TB_GY_WARDENS_VIGIL;
+                break;
+            case GOSSIP_OPTION_ID_EAST_SPIRE:
+                areaId = TB_GY_EAST_SPIRE;
+                break;
+            case GOSSIP_OPTION_ID_WEST_SPIRE:
+                areaId = TB_GY_WEST_SPIRE;
+                break;
+            case GOSSIP_OPTION_ID_SOUTH_SPIRE:
+                areaId = TB_GY_SOUTH_SPIRE;
+                break;
+            default:
+                return;
             }
-            return true;
+
+            if (WorldSafeLocsEntry const* safeLoc = sWorldSafeLocsStore.LookupEntry(areaId))
+                player->TeleportTo(safeLoc->map_id, safeLoc->x, safeLoc->y, safeLoc->z, 0);
         }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_tb_spirit_guideAI(creature);
+    }
 };
 
 class npc_tol_barad_battlemage : public CreatureScript
@@ -64,7 +91,7 @@ class npc_tol_barad_battlemage : public CreatureScript
 
         bool OnGossipHello(Player* player, Creature* creature) override
         {
-            if (creature->isQuestGiver())
+            if (creature->IsQuestGiver())
                 player->PrepareQuestMenu(creature->GetGUID());
 
             Battlefield* BfTB = sBattlefieldMgr->GetBattlefieldByBattleId(BATTLEFIELD_BATTLEID_TB);
@@ -114,8 +141,41 @@ class npc_tol_barad_battlemage : public CreatureScript
         }
 };
 
+// 85123 - Siege Cannon - selects random target
+class spell_siege_cannon : public SpellScriptLoader
+{
+public:
+    spell_siege_cannon() : SpellScriptLoader("spell_siege_cannon") { }
+
+    class spell_siege_cannon_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_siege_cannon_SpellScript);
+
+        void SelectRandomTarget(std::list<WorldObject*>& targets)
+        {
+            if (targets.empty())
+                return;
+
+            WorldObject* target = Trinity::Containers::SelectRandomContainerElement(targets);
+            targets.clear();
+            targets.push_back(target);
+        }
+
+        void Register() override
+        {
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_siege_cannon_SpellScript::SelectRandomTarget, EFFECT_0, TARGET_UNIT_SRC_AREA_ENTRY);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_siege_cannon_SpellScript();
+    }
+};
+
 void AddSC_tol_barad()
 {
    new npc_tol_barad_battlemage();
-   new npc_tb_spiritguide();
+   new npc_tb_spirit_guide();
+   new spell_siege_cannon();
 }
